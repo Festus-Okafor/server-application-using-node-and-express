@@ -1,6 +1,7 @@
 import express from "express"
 import users from "./users.js"
 import bodyParser from "body-parser"
+import comments from "./comments.js"
  
 const app = express()
 const port = 3000
@@ -9,7 +10,7 @@ const port = 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+let posts = []
  
 
 app.get('/' , (req, res) =>{
@@ -18,12 +19,19 @@ app.get('/' , (req, res) =>{
 app.get('/users', (req, res) =>{
   res.send(users)
 })
+app.get('/comments', (req, res) =>{
+  res.send(comments)
+})
 
+
+app.get("/posts",(req,res)=>{
+  res.send(posts)
+})
 //passing Data using a body parser
-app.post('/Data', (req, res) =>{
-  const Data = req.body
-  
-  res.send(Data)
+app.post('/createPost', (req, res) =>{
+  const newPost = req.body
+  posts.push(newPost)
+  res.send(newPost)
 })
 
 
@@ -82,16 +90,19 @@ app.post('/todos', (req, res) => {
 
 /* 
 
-
-
-
-
 // Delete a todo
 app.delete('/todos/:id', (req, res) => {
   const id = parseInt(req.params.id);
   todos = todos.filter(todo => todo.id !== id);
   res.status(200).json({ message: 'Todo deleted' });
 }); */
+
+
+//error-handling middleware 
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.json({ error: err.message });
+});
 
 app.listen(port, () =>{
     console.log(`server is running at port: `, port)
