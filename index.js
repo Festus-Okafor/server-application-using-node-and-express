@@ -10,11 +10,17 @@ const port = 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+
 let posts = []
  
+app.set("view engine", "ejs")
+
 
 app.get('/' , (req, res) =>{
-    res.send("Hello world")
+  console.log("Hellow boy")
+    res.render("index")
+
 })
 app.get('/users', (req, res) =>{
   res.send(users)
@@ -34,6 +40,9 @@ app.post('/createPost', (req, res) =>{
   res.send(newPost)
 })
 
+app.put('/user/:userId', (req, res) =>{
+  res.send('')
+})
 
 
 /* 
