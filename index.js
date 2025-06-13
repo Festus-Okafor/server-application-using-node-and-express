@@ -1,7 +1,7 @@
 import express from "express"
-import users from "./users.js"
 import bodyParser from "body-parser"
 import comments from "./comments.js"
+import users from "./users.js"
  
 const app = express()
 const port = 3000
@@ -10,29 +10,27 @@ const port = 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-
 let posts = []
- 
 app.set("view engine", "ejs")
 
-
+// for all the get routes
 app.get('/' , (req, res) =>{
   console.log("Hellow boy")
     res.render("index")
-
 })
 app.get('/users', (req, res) =>{
   res.send(users)
 })
 app.get('/comments', (req, res) =>{
+  const commentId = req.params.id
   res.send(comments)
-})
+  })
 
-
+//below is for the posts
 app.get("/posts",(req,res)=>{
   res.send(posts)
 })
+
 //passing Data using a body parser
 app.post('/createPost', (req, res) =>{
   const newPost = req.body
@@ -40,40 +38,24 @@ app.post('/createPost', (req, res) =>{
   res.send(newPost)
 })
 
-app.put('/user/:userId', (req, res) =>{
+ app.get('/:id', (req, res) =>{
+  res.send(`Get a user's ID: ${ req.params.id}`)
+}) 
+
+//below is for the put
+app.put('/:id', (req, res)=>{
+ res.send(`Update a user ID: ${req.params.id}`)
+})
+
+app.delete('/:id', (req, res)=>{
+ res.send(`Delete a user ID: ${req.params.id}`)
+})
+
+/* app.put('/user/:userId', (req, res) =>{
   res.send('')
 })
-
-
-/* 
-
-
-app.route('/users')
-   .get((req, res) =>{
-    res.send("Get a random user")
-   })
-  .post((req, res) =>{
-    res.send("add a random user")
-   })
-   .put((req, res) =>{
-    res.send("update the user's information")
-   })
-
-
-app.get('/' , (req, res) =>{
-    res.send("Hello world")
-})
-app.get('/users' , (req, res) =>{
-    res.send("route for user")
-})
-app.get('/posts' , (req, res) =>{
-    res.send("route for posts")
-})
-app.get('/comments' , (req, res) =>{
-    res.send("route for comments")
-})
-
  */
+
 
 /* 
 let users = []; // In-memory array for todos
