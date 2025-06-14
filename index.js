@@ -13,81 +13,88 @@ app.use(bodyParser.json());
 let posts = []
 app.set("view engine", "ejs")
 
-// for all the get routes
+// The get routes below
 app.get('/' , (req, res) =>{
   console.log("Hellow boy")
     res.render("index")
 })
-app.get('/users', (req, res) =>{
+app.get('/api/users', (req, res) =>{
   res.send(users)
 })
-app.get('/comments', (req, res) =>{
+app.get('/api/comments', (req, res) =>{
   const commentId = req.params.id
   res.send(comments)
   })
 
 //below is for the posts
-app.get("/posts",(req,res)=>{
+app.get("/api/posts",(req,res)=>{
   res.send(posts)
 })
 
 //passing Data using a body parser
 app.post('/createPost', (req, res) =>{
+  //parsed data from post is located/saved within my req.body
+
+  if(req.body.name && req.body.username && req.body.email){
+    if(posts.find((u)=>u.username == req.body.username)){
+      res.json({error: "Username is already assigned"})
+      return;
+    }
+    const newPost = {
+      id: posts[posts.length-1].id +1,
+      name: req.body.name,
+      username: req.body.username,
+      email: req.body.email,
+    }
+  } 
   const newPost = req.body
   posts.push(newPost)
   res.send(newPost)
 })
 
- app.get('/:id', (req, res) =>{
+/*  app.get('/:id', (req, res) =>{
   res.send(`Get a user's ID: ${ req.params.id}`)
-}) 
+})  */
 
-//below is for the put
-app.patch('/:id', (req, res)=>{
- res.send(`Update a user ID: ${req.params.id}`)
+//below is for the patch
+app.patch("/api/users/:id", (req, res)=>{
+    // Within the PATCH request route, we allow the client
+    // to make changes to an existing user in the database.
+    const user = users.find((u, i) => {
+      if (u.id == req.params.id) {
+        for (const key in req.body) {
+          users[i][key] = req.body[key];
+        }
+        return true;
+      }
+    });
+
+    if (user) res.json(user);
+    else next();
+  res.send(`Update user ID: ${req.params.id}`)
 })
 
-app.delete('/users/:id', (req, res)=>{
+
+app.delete('/:id', (req, res)=>{
+  // The DELETE request route simply removes a resource.
+    const user = users.find((u, i) => {
+      if (u.id == req.params.id) {
+        users.splice(i, 1);
+        return true;
+      }
+    });
+
+    if (user) res.json(user);
+    else next();
+  
  res.send(`User with the input ID deleted: ${req.params.id}`)
 })
 
-/* app.put('/user/:userId', (req, res) =>{
-  res.send('')
-})
- */
-
-
-/* 
-let users = []; // In-memory array for todos
-
-// Get all users
-app.get('/users', (req, res) => {
-  res.json(todos);
+// Custom 404 (not found) middleware.
+app.use((req, res) => {
+  res.status(404);
+  res.json({ error: "Resource Not Found" });
 });
-
-// Add a new post route
-app.post('/todos', (req, res) => {
-  const { task } = req.body;
-  if (task) {
-    const newTodo = { id: Date.now(), task };
-    todos.push(newTodo);
-    res.status(201).json(newTodo);
-  } else {
-    res.status(400).json({ error: 'Task is required' });
-  }
-}); */
-
-
-
-/* 
-
-// Delete a todo
-app.delete('/todos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  todos = todos.filter(todo => todo.id !== id);
-  res.status(200).json({ message: 'Todo deleted' });
-}); */
-
 
 //error-handling middleware 
 app.use((err, req, res, next) => {
