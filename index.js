@@ -43,12 +43,12 @@ app.post('/createPost', (req, res) =>{
 }) 
 
 //below is for the put
-app.put('/:id', (req, res)=>{
+app.patch('/:id', (req, res)=>{
  res.send(`Update a user ID: ${req.params.id}`)
 })
 
-app.delete('/:id', (req, res)=>{
- res.send(`Delete a user ID: ${req.params.id}`)
+app.delete('/users/:id', (req, res)=>{
+ res.send(`User with the input ID deleted: ${req.params.id}`)
 })
 
 /* app.put('/user/:userId', (req, res) =>{
