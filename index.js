@@ -2,6 +2,7 @@ import express from "express"
 import bodyParser from "body-parser"
 import comments from "./comments.js"
 import users from "./users.js"
+
  
 const app = express()
 const port = 3000
@@ -10,12 +11,13 @@ const port = 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-let posts = []
+
 app.set("view engine", "ejs")
+let posts = []
 
 // The get routes below
 app.get('/' , (req, res) =>{
-  console.log("Hellow boy")
+  console.log("Hellow")
     res.render("index")
 })
 app.get('/api/users', (req, res) =>{
